@@ -94,6 +94,7 @@ end
 
 
 class GenerosPeliculasEcuador
+	
 	attr_accessor :enlaceEcuador, :generosPeliculas
 
 	def initialize()
@@ -103,9 +104,8 @@ class GenerosPeliculasEcuador
 			"Musica"=>"msc", "Romance"=>"rma", "Deporte"=>"spt", "Western"=>"wsn", "Animacion"=>"ani", "Crimen"=>"crm", "Drama"=>"drm",
 			"Historia"=>"hst", "Familia"=>"fml", "Misterio y Suspenso"=>"trl", "Ciencia ficcion"=>"sfc", "Guerra"=>"war", "Reality TV"=>"rly"}
 
-
-		CSV.open('GeneroPeliculasEcuador(Alcivar).csv', 'w') do |csv|
-			csv << %w[Genero cantidadPeliculas]
+		CSV.open('GenerosPeliculasEcuador(Alcivar).csv', 'w') do |csv|
+			csv << %w[Genero CantidadPeliculas]
 		end
 
 		realizarProceso()
@@ -114,7 +114,7 @@ class GenerosPeliculasEcuador
 
 	def realizarProceso()
 		
-		puts("\n------------------------------Extrayendo cantidad de peliculas por genero en Ecuador------------------------------")
+		puts("\n------------------------------Extrayendo cantidad de peliculas por genero en Ecuador------------------------------\n\n")
 
 		@generosPeliculas.each do |generoPeli, enlaceConsulta|
 			
@@ -136,9 +136,9 @@ class GenerosPeliculasEcuador
 				cantidadPeliculas = (preCantidadPeliculas).to_i
 			end
 
-			puts("\n#{generoPeli}, consultando la url #{urlConsulta}")
+			puts("#{generoPeli}, consultando la url #{urlConsulta}")
 
-			CSV.open("GeneroPeliculasEcuador(Alcivar).csv", "a") do |csv|
+			CSV.open("GenerosPeliculasEcuador(Alcivar).csv", "a") do |csv|
 				csv << [generoPeli, cantidadPeliculas]     
 			end
 
@@ -150,6 +150,71 @@ class GenerosPeliculasEcuador
 
 end
 
-peliculasEcuador = GenerosPeliculasEcuador.new()
+
+class GenerosPorAnioEcuador
+
+	attr_accessor :generosPeliculas, :enlaceBase
+
+	def initialize()
+		
+		@generosPeliculas = {"Comedia"=>"cmy", "Animacion"=>"ani", "Familia"=>"fml"}
+		
+		@enlaceBase = "https://www.justwatch.com/ec/peliculas"
+
+		CSV.open('GenerosPorAnioEcuador(Jose Alcivar).csv', 'w') do |csv|
+			csv << %w[Genero Anio CantidadPelis]
+		end
+
+		realizarProceso()
+
+	end 
+
+	def realizarProceso()
+
+		puts("\n\n\n------------------------------Extrayendo peliculas de comedia, animacion y familia por anio en Ecuador------------------------------\n")
+
+		@generosPeliculas.each do |genero, ruta|
+
+			puts("")
+
+			for anio in (2015..2022)
+				enlace = "#{enlaceBase}?genres=#{ruta}&release_year_from=#{(anio).to_s}&release_year_until=#{(anio).to_s}"
+
+				paginaLeer = URI.open(enlace)
+				paginaLeida = paginaLeer.read
+				paginaNoko = Nokogiri::HTML(paginaLeida)
+
+				resultado = paginaNoko.css(".total-titles").inner_text.strip
+				resultadoSeparado = resultado.split(" ", -1)
+
+				preCantidadPeliculas = resultadoSeparado[0]
+
+				if( preCantidadPeliculas.include?("."))
+					numero = preCantidadPeliculas.split(".")
+					cantidadPeliculas = (numero[0]+numero[1]).to_i
+				else
+					cantidadPeliculas = (preCantidadPeliculas).to_i
+				end
+
+				puts("#{genero} en el anio #{(anio).to_s}, consultando la url #{enlace}")
+
+				CSV.open("GenerosPorAnioEcuador(Jose Alcivar).csv", "a") do |csv|
+					csv << [genero, anio, cantidadPeliculas]     
+				end
+
+			end
+
+		end 
+
+		puts("\n------------------------------Peliculas de comedia, animacion y familia por anio en Ecuador, finalizado------------------------------\n")
+
+	end 
+
+end 
+
+generosPeliculasEcuador = GenerosPeliculasEcuador.new()
+
+generosPorAnio = GenerosPorAnioEcuador.new()
+
 
 #peliculas = PeliculasPorPais.new()

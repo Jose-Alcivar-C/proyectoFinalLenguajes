@@ -3,95 +3,69 @@ require 'nokogiri' # formatear, parsear a html
 require 'csv' # escribir y leer csv
 
 #------------------------------------------------------------Jose Alcivar------------------------------------------------------------
-class PeliculasPorPais
+class PeliculasPorAnioCentroamerica
 	
-	attr_accessor :enlace, :diccionarioPaises
+	attr_accessor :diccionarioPaises, :enlaceBase
 
 	def initialize()
-		@enlace = "https://www.justwatch.com"
+
+		@enlaceBase = "https://www.justwatch.com"
+
+		@diccionarioPaises = {"El Salvador"=>"/sv", "Guatemala"=>"/gt", "Honduras"=>"/hn", "Panama"=>"/pa"}
+
+		CSV.open('PeliculasCentroamerica(Alcivar).csv', 'w') do |csv|
+			csv << %w[Pais Anio CantidadPeliculas]
+		end
+
+		realizarProceso()
+
+	end 
+
+	def realizarProceso()
 		
-		@diccionarioPaises = {"Canada"=>"/ca", "Estados Unidos"=>"/us", "Islas Bermudas"=>"/bm", "Mexico"=>"/mx", "Argentina"=>"/ar",
-		"Bolivia"=>"/bo", "Brasil"=>"/br", "Chile"=>"/cl", "Colombia"=>"/co", "Ecuador"=>"/ec", "Paraguay"=>"/py", "Peru"=>"/pe", 
-		"Uruguay"=>"/uy", "Venezuela"=>"/ve", "Alemania"=>"/de", "Andorra"=>"/ad", "Ciudad del Vaticano"=>"/va", "Croacia"=>"/hr", 
-		"Dinamarca"=>"/dk", "Espana"=>"/es", "Gibraltar"=>"/gi", "Grecia"=>"/gr", "Guernsey"=>"/gg", "Irlanda"=>"/ie", "Islandia"=>"/is", 
-		"Italia"=>"/it", "Liechtenstein"=>"/li", "Paises Bajos"=>"/nl", "Moldavia"=>"/md", "Noruega"=>"/no", "Reino Unido"=>"/uk", 
-		"Rumania"=>"/ro", "San Marino"=>"/sm", "Serbia"=>"/rs", "Suiza"=>"/ch", "Turquia"=>"/tr", "Corea del Sur"=>"/kr", "Filipinas"=>"/ph",
-		"Hong Kong"=>"/hk", "India"=>"/in", "Indonesia"=>"/id", "Japon"=>"/jp", "Malasia"=>"/my", "Pakistan"=>"/pk", "Singapur"=>"/sg", 
-		"Tailandia"=>"/th", "Taiwan"=>"/tw", "El Salvador"=>"/sv", "Guatemala"=>"/gt", "Honduras"=>"/hn", "Panama"=>"/pa", "Argelia"=>"/dz",
-		"Ghana"=>"/gh", "Guinea Ecuatorial"=>"/gq", "Kenia"=>"/ke", "Libia"=>"/ly", "Marruecos"=>"/ma", "Nigeria"=>"/ng", "Tunez"=>"/tn", 
-		"Uganda"=>"/ug", "Zambia"=>"/zm", "Australia"=>"/au", "Fiyi"=>"/fj", "Nueva Zelanda"=>"/nz", "Emiratos Arabes Unidos"=>"/ae", 
-		"Lebanoni"=>"/il"}
+		puts("\n------------------------------Extrayendo peliculas de genero drama por anio en Centroamerica------------------------------\n")
 
-		CSV.open('peliculasPorPais(Alcivar).csv', 'w') do |csv|
-			csv << %w[pais cantidadPeliculas]
-		end
+		@diccionarioPaises.each do |pais, ruta|
 
-		recorrerDatos()
-	end
+			puts("")
 
-	def recorrerDatos()
-
-		puts("--------------------Extrayendo cantidad de peliculas por pais--------------------\n\n")
-
-		@diccionarioPaises.each do |pais, url|
-			enlaceActual1 = @enlace+url
-
-			paginaLeer1 = URI.open(enlaceActual1)
-			paginaLeida1 = paginaLeer1.read
-			paginaNoko1 = Nokogiri::HTML(paginaLeida1)
-			contenedorPrincipal1 = paginaNoko1.css('.filter-bar-content-type').css(".filter-bar-content-type__item")
-			proximoEnlace = @enlace+contenedorPrincipal1[1].css('a').attr("href")
-
-			paginaLeer2 = URI.open(proximoEnlace)
-			paginaLeida2 = paginaLeer2.read
-			paginaNoko2 = Nokogiri::HTML(paginaLeida2)
-
-			resultado = paginaNoko2.css(".total-titles").inner_text.strip
-			separador = resultado.split(" ", -1)
-			
-			if (separador[0].include?(",") || separador[0].include?(".") || separador[0].include?("’"))
-				if separador[0].include?(",")
-					valor = separador[0].split(",", -1)
-					cantidad = (valor[0]+valor[1]).to_i
-
-				elsif separador[0].include?(".")
-					valor = separador[0].split(".", -1)
-					cantidad = (valor[0]+valor[1]).to_i
-
-				elsif separador[0].include?("’")
-					valor = separador[0].split("’", -1)
-					cantidad = (valor[0]+valor[1]).to_i
-				end
-
-			elsif (separador[1].include?(",") || separador[1].include?(".") || separador[1].include?("’"))
-				if separador[1].include?(",")
-					valor = separador[1].split(",", -1)
-					cantidad = (valor[0]+valor[1]).to_i
-
-				elsif separador[1].include?(".")
-					valor = separador[1].split(".", -1)
-					cantidad = (valor[0]+valor[1]).to_i
-
-				elsif separador[1].include?("’")
-					valor = separador[1].split("’", -1)
-					cantidad = (valor[0]+valor[1]).to_i
-				end
-			end
+			for anio in (2000..2022)
 				
-			CSV.open('peliculasPorPais(Alcivar).csv', 'a') do |csv|
-				csv << [pais, cantidad]     
-			end
+				enlace = "#{@enlaceBase}#{ruta}/peliculas?genres=drm&release_year_from=#{(anio).to_s}&release_year_until=#{(anio).to_s}"
 
-			puts("Se hizo scraping a #{pais} en la url " + proximoEnlace + "\n")
+				puts("#{pais} en el anio #{(anio).to_s}, consultando url #{enlace}")
+
+				paginaLeer = URI.open(enlace)
+				paginaLeida = paginaLeer.read
+				paginaNoko = Nokogiri::HTML(paginaLeida)
+
+				resultado = paginaNoko.css(".total-titles").inner_text.strip
+				resultadoSeparado = resultado.split(" ", -1)
+
+				preCantidadPeliculas = resultadoSeparado[0]
+
+				if( preCantidadPeliculas.include?(","))
+					numero = preCantidadPeliculas.split(",")
+					cantidadPeliculas = (numero[0]+numero[1]).to_i
+				else
+					cantidadPeliculas = (preCantidadPeliculas).to_i
+				end
+
+				CSV.open("PeliculasCentroamerica(Alcivar).csv", "a") do |csv|
+					csv << [pais, anio, cantidadPeliculas]     
+				end
+
+			end 
 
 		end
 
-		puts("\n--------------------Peliculas por pais, finalizado--------------------\n")
-	
+		puts("\n------------------------------Peliculas de genero drama por anio en Centroamerica, finalizado------------------------------\n")
+
 	end
-	
+
 end
 
+############################################################################
 
 class GenerosPeliculasEcuador
 	
@@ -114,12 +88,14 @@ class GenerosPeliculasEcuador
 
 	def realizarProceso()
 		
-		puts("\n------------------------------Extrayendo cantidad de peliculas por genero en Ecuador------------------------------\n\n")
+		puts("\n\n\n------------------------------Extrayendo cantidad de peliculas por genero en Ecuador------------------------------\n\n")
 
 		@generosPeliculas.each do |generoPeli, enlaceConsulta|
 			
 			urlConsulta = "#{enlaceEcuador}?genres=#{enlaceConsulta}"
-			
+
+			puts("#{generoPeli}, consultando la url #{urlConsulta}")
+
 			paginaLeer = URI.open(urlConsulta)
 			paginaLeida = paginaLeer.read
 			paginaNoko = Nokogiri::HTML(paginaLeida)
@@ -136,8 +112,6 @@ class GenerosPeliculasEcuador
 				cantidadPeliculas = (preCantidadPeliculas).to_i
 			end
 
-			puts("#{generoPeli}, consultando la url #{urlConsulta}")
-
 			CSV.open("GenerosPeliculasEcuador(Alcivar).csv", "a") do |csv|
 				csv << [generoPeli, cantidadPeliculas]     
 			end
@@ -150,6 +124,7 @@ class GenerosPeliculasEcuador
 
 end
 
+############################################################################
 
 class GenerosPorAnioEcuador
 
@@ -180,6 +155,8 @@ class GenerosPorAnioEcuador
 			for anio in (2015..2022)
 				enlace = "#{enlaceBase}?genres=#{ruta}&release_year_from=#{(anio).to_s}&release_year_until=#{(anio).to_s}"
 
+				puts("#{genero} en el anio #{(anio).to_s}, consultando la url #{enlace}")
+
 				paginaLeer = URI.open(enlace)
 				paginaLeida = paginaLeer.read
 				paginaNoko = Nokogiri::HTML(paginaLeida)
@@ -196,8 +173,6 @@ class GenerosPorAnioEcuador
 					cantidadPeliculas = (preCantidadPeliculas).to_i
 				end
 
-				puts("#{genero} en el anio #{(anio).to_s}, consultando la url #{enlace}")
-
 				CSV.open("GenerosPorAnioEcuador(Jose Alcivar).csv", "a") do |csv|
 					csv << [genero, anio, cantidadPeliculas]     
 				end
@@ -212,9 +187,10 @@ class GenerosPorAnioEcuador
 
 end 
 
-generosPeliculasEcuador = GenerosPeliculasEcuador.new()
+############################################################################
 
-generosPorAnio = GenerosPorAnioEcuador.new()
+peliculasCentroamerica = PeliculasPorAnioCentroamerica.new() #peliculas de genero drama en paises de centroamerica entre 2000 y 2022
 
+generosPeliculasEcuador = GenerosPeliculasEcuador.new() #cantidad de peliculas por cada genero en Ecuador
 
-#peliculas = PeliculasPorPais.new()
+generosPorAnio = GenerosPorAnioEcuador.new() #generos comedia, animacion y familia en Ecuador entre 2015 y 2022

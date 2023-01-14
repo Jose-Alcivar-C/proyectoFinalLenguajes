@@ -28,31 +28,6 @@ class PeliculasPorPais
 
 		recorrerDatos()
 	end
-	
-	#def iniciarTodo()
-	#	paginaLeer = URI.open(@enlace)
-	#	paginaLeida = paginaLeer.read
-	#	paginaNoko = Nokogiri::HTML(paginaLeida)
-
-	#	contenedorPrincipal = paginaNoko.css(".row.hidden-xs")
-
-	#	print("Obteniendo los paises disponibles, un momento...\n")
-
-	#	contenedorPrincipal.css(".countries-list__region-content").each do |grupoPaises|
-	#		listaPaises = grupoPaises.css("li")
-
-	#		total = 1
-	#		listaPaises.each do |seccionPais|
-	#			nombrePais = seccionPais.css("a").inner_text.strip
-	#			enlacePais = seccionPais.css("a").attr("href").inner_text.strip
-	#			
-	#			@diccionarioPaises[nombrePais] = enlacePais
-	#		end
-	#	end
-
-	#	recorrerDatos()
-
-	#end
 
 	def recorrerDatos()
 
@@ -117,4 +92,64 @@ class PeliculasPorPais
 	
 end
 
-peliculas = PeliculasPorPais.new()
+
+class GenerosPeliculasEcuador
+	attr_accessor :enlaceEcuador, :generosPeliculas
+
+	def initialize()
+		@enlaceEcuador = "https://www.justwatch.com/ec/peliculas"
+
+		@generosPeliculas = {"Accion y Aventura"=>"act", "Comedia"=>"cmy", "Documental"=>"doc", "Fantasia"=>"fnt", "Terror"=>"hrr", 
+			"Musica"=>"msc", "Romance"=>"rma", "Deporte"=>"spt", "Western"=>"wsn", "Animacion"=>"ani", "Crimen"=>"crm", "Drama"=>"drm",
+			"Historia"=>"hst", "Familia"=>"fml", "Misterio y Suspenso"=>"trl", "Ciencia ficcion"=>"sfc", "Guerra"=>"war", "Reality TV"=>"rly"}
+
+
+		CSV.open('GeneroPeliculasEcuador(Alcivar).csv', 'w') do |csv|
+			csv << %w[Genero cantidadPeliculas]
+		end
+
+		realizarProceso()
+
+	end
+
+	def realizarProceso()
+		
+		puts("\n------------------------------Extrayendo cantidad de peliculas por genero en Ecuador------------------------------")
+
+		@generosPeliculas.each do |generoPeli, enlaceConsulta|
+			
+			urlConsulta = "#{enlaceEcuador}?genres=#{enlaceConsulta}"
+			
+			paginaLeer = URI.open(urlConsulta)
+			paginaLeida = paginaLeer.read
+			paginaNoko = Nokogiri::HTML(paginaLeida)
+			
+			resultado = paginaNoko.css(".total-titles").inner_text.strip
+			resultadoSeparado = resultado.split(" ", -1)
+
+			preCantidadPeliculas = resultadoSeparado[0]
+
+			if( preCantidadPeliculas.include?("."))
+				numero = preCantidadPeliculas.split(".")
+				cantidadPeliculas = (numero[0]+numero[1]).to_i
+			else
+				cantidadPeliculas = (preCantidadPeliculas).to_i
+			end
+
+			puts("\n#{generoPeli}, consultando la url #{urlConsulta}")
+
+			CSV.open("GeneroPeliculasEcuador(Alcivar).csv", "a") do |csv|
+				csv << [generoPeli, cantidadPeliculas]     
+			end
+
+		end 
+
+		puts("\n------------------------------Cantidad de peliculas por genero en Ecuador, finalizado------------------------------\n")
+
+	end
+
+end
+
+peliculasEcuador = GenerosPeliculasEcuador.new()
+
+#peliculas = PeliculasPorPais.new()

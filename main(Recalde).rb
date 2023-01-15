@@ -129,3 +129,6 @@ top5RatingRomance.each do |vo|
     end
    end
 end
+puts "----------Distribucción de la duración de las peliculas de ciencia ficción ----------"
+#En pantalla se mostrará 10 distribuciones, en la grafica en R estarán todos los datos que contiene el array
+puts array_duracionCienciaFiccion.slice(0,10)

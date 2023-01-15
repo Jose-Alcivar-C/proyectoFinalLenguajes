@@ -45,6 +45,23 @@ class Pais_peli
   end
 end
 
+class Duracion_peli
+  attr_accessor :peli,:duracion
+  def initialize(peli,duracion)
+    @peli=peli
+    @duracion=duracion
+    
+     
+  end
+  def guardar()
+    
+    CSV.open("peliculas_duracion_minima.csv", "a") do |csv|
+       csv<< [@peli,@duracion]   
+    end
+   
+  end
+end
+
 require 'open-uri' #consultar a la plataforma
 require 'nokogiri' #formatear, parsear a html
 require 'csv' #escribir y leer csv
@@ -55,11 +72,14 @@ require 'csv' #escribir y leer csv
      csv << %w[nombre,pais,duracion,año,votos]
 
    end
-
    CSV.open("peliculas_pais.csv", "wb") do |csv|
-    csv << %w[pais,cantidad]
+     csv << %w[pais,cantidad]
 
-  end
+   end
+   CSV.open("peliculas_duracion_minima.csv", "wb") do |csv|
+     csv << %w[pelicula,duracion]
+
+   end
   
   
 pag=1
@@ -94,7 +114,11 @@ imd=dato[0]
       puts nombre,pais,duracion,año,imd
 Pelicula.new(nombre,pais,duracion,año,imd).guardar
   
+
+ 
     end
+    
+
       
      
  end
@@ -122,12 +146,36 @@ for p in array_paises
   end
     
 end
-puts datos_paises
+#puts datos_paises
 datos_paises.each do |llave, valor|
    Pais_peli.new(llave,valor).guardar
 end
 
 #¿Cuáles son las 10 películas que tienen una duración en minutos mínima en la página?
+ 
 
+datos_duracion={}
+array_duracion=[]
+cuerpo = File.read("peliculas_info.csv")
+lineas = cuerpo.split("\n")
+lineas.each do |linea|
+    cad=linea.split(",")
+  duracion_peli=cad[2]
+  if(duracion_peli!="No especifica" and duracion_peli!="duracion" )
+    separando=duracion_peli.split(" ")
+    duracion_1=separando[0]
+     duracion_min= duracion_1.to_i
+     array_duracion.push(duracion_min)
+     nombre_peli=cad[0]
+    datos_duracion[duracion_min]=nombre_peli
+     
+  end
+end
+
+duracion_minima=array_duracion.sort! {|x, y| x <=> y}.slice(0,10)
+duracion_minima.each do |duracion_min_peli|
+    pelicula_ord=datos_duracion[duracion_min_peli]
+    Duracion_peli.new(pelicula_ord,duracion_min_peli).guardar
+  end
 
 

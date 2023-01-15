@@ -201,3 +201,13 @@ class PeliculaPorAnio
         end
       i+=1
     end
+    puts "----------Promedio rating de las peliculas del 2018 ----------"
+    puts array_rating2018.sum(0.0) / array_rating2018.size
+    puts "----------Promedio rating de las peliculas del 2019 ----------"
+    puts array_rating2019.sum(0.0) / array_rating2019.size
+    puts "----------Promedio rating de las peliculas del 2020 ----------"
+    puts array_rating2020.sum(0.0) / array_rating2020.size
+    puts "----------Promedio rating de las peliculas del 2021 ----------"
+    puts array_rating2021.sum(0.0) / array_rating2021.size
+    puts "----------Promedio rating de las peliculas del 2022 ----------"
+    puts array_rating2022.sum(0.0) / array_rating2022.size

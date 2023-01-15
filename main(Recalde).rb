@@ -65,3 +65,67 @@ class PeliculaPorGenero
         end
         i+=1
     end
+
+#puts array_duracionCienciaFiccion
+puts "----------Genero: Terror, Top 5 de sus mejores peliculas ----------"
+top5RatingTerror=array_ratingTerror.sort! {|x, y| y <=> x}.slice(0,3)
+#puts top5Votos
+top5RatingTerror.each do |vo|
+  archivo = File.read("prueba.csv")
+  lineas = archivo.split("\n")
+  lineas.each do |linea|
+    cadena=linea.split(",")
+    docvoto=cadena[2]
+    vot=docvoto.to_f
+    if(cadena[0]=="terror")
+      if(vot==vo)
+        print cadena[1] 
+        print " OBTUVO "
+        print vot
+        puts " votos"
+      end
+    end
+   end
+end
+
+puts "----------Genero: Accion, Top 5 de sus mejores peliculas ----------"
+top5RatingAccion=array_ratingAccion.sort! {|x, y| y <=> x}.slice(0,4)
+#puts top5Votos
+top5RatingAccion.each do |vo|
+  archivo = File.read("prueba.csv")
+  lineas = archivo.split("\n")
+  lineas.each do |linea|
+    cadena=linea.split(",")
+    docvoto=cadena[2]
+    vot=docvoto.to_f
+    if(cadena[0]=="accion")
+      if(vot==vo)
+        print cadena[1] 
+        print " OBTUVO "
+        print vot
+        puts " votos"
+      end
+    end
+   end
+end
+
+puts "----------Genero: Romance, Top 5 de sus mejores peliculas ----------"
+top5RatingRomance=array_ratingRomance.sort! {|x, y| y <=> x}.slice(0,5)
+#puts top5Votos
+top5RatingRomance.each do |vo|
+  archivo = File.read("prueba.csv")
+  lineas = archivo.split("\n")
+  lineas.each do |linea|
+    cadena=linea.split(",")
+    docvoto=cadena[2]
+    vot=docvoto.to_f
+    if(cadena[0]=="romance")
+      if(vot==vo)
+        print cadena[1] 
+        print " OBTUVO "
+        print vot
+        puts " votos"
+      end
+    end
+   end
+end

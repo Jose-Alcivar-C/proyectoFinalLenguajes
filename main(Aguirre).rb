@@ -50,11 +50,16 @@ require 'nokogiri' #formatear, parsear a html
 require 'csv' #escribir y leer csv
 
 #Poner encabezados
-=begin
+
    CSV.open("peliculas_info.csv", "wb") do |csv|
      csv << %w[nombre,pais,duracion,año,votos]
 
    end
+
+   CSV.open("peliculas_pais.csv", "wb") do |csv|
+    csv << %w[pais,cantidad]
+
+  end
   
   
 pag=1
@@ -89,22 +94,15 @@ imd=dato[0]
       puts nombre,pais,duracion,año,imd
 Pelicula.new(nombre,pais,duracion,año,imd).guardar
   
-
- 
     end
-    
-
       
      
  end
    pag+=1 
 end
-=end
-# ¿Cuál es la cantidad de películas por país que tiene la página?
- CSV.open("peliculas_pais.csv", "wb") do |csv|
-     csv << %w[pais,cantidad]
 
-   end
+# ¿Cuál es la cantidad de películas por país que tiene la página?
+ 
 array_paises=[]
 cuerpo = File.read("peliculas_info.csv")
 lineas = cuerpo.split("\n")

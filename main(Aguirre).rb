@@ -62,6 +62,40 @@ class Duracion_peli
   end
 end
 
+class Rating_peli
+  attr_accessor :peli,:imd
+  def initialize(peli,imd)
+    @peli=peli
+    @imd=imd
+    
+     
+  end
+  def guardar()
+    
+    CSV.open("peliculas_rating.csv", "a") do |csv|
+       csv<< [@peli,@imd]   
+    end
+   
+  end
+end
+
+class Rating_mayor_peli
+  attr_accessor :peli,:rating
+  def initialize(peli,rating)
+    @peli=peli
+    @rating=rating
+    
+     
+  end
+  def guardar()
+    
+    CSV.open("peliculas_rating_mayor.csv", "a") do |csv|
+       csv<< [@peli,@rating]   
+    end
+   
+  end
+end
+
 require 'open-uri' #consultar a la plataforma
 require 'nokogiri' #formatear, parsear a html
 require 'csv' #escribir y leer csv
@@ -80,6 +114,15 @@ require 'csv' #escribir y leer csv
      csv << %w[pelicula,duracion]
 
    end
+   CSV.open("peliculas_rating.csv", "wb") do |csv|
+     csv << %w[pelicula,IMDb]
+
+  end
+
+   CSV.open("peliculas_rating_mayor.csv", "wb") do |csv|
+     csv << %w[pelicula,rating]
+
+  end
   
   
 pag=1
@@ -125,6 +168,7 @@ Pelicula.new(nombre,pais,duracion,año,imd).guardar
    pag+=1 
 end
 
+
 # ¿Cuál es la cantidad de películas por país que tiene la página?
  
 array_paises=[]
@@ -148,6 +192,7 @@ for p in array_paises
 end
 #puts datos_paises
 datos_paises.each do |llave, valor|
+  puts "#{llave}, con #{valor} peliculas"
    Pais_peli.new(llave,valor).guardar
 end
 
@@ -175,7 +220,73 @@ end
 duracion_minima=array_duracion.sort! {|x, y| x <=> y}.slice(0,10)
 duracion_minima.each do |duracion_min_peli|
     pelicula_ord=datos_duracion[duracion_min_peli]
+    puts "#{pelicula_ord}, con #{duracion_min_peli} min"
     Duracion_peli.new(pelicula_ord,duracion_min_peli).guardar
-  end
+end
 
+#¿Cuáles son las 10 mejores películas rankeadas en el 2020?
+
+
+pagina=1
+link2=''
+
+while(pagina<8)
+  if pagina==1
+    link2 = "https://play.pelishouse.me/release/2020/"
+  else
+    link2 = "https://play.pelishouse.me/release/2020/page/#{pagina}/"
+   
+  end
+ # puts "Scrapeando --#{link2} "
+  pagina2=URI.open(link2)
+  paginaParsed2=Nokogiri::HTML(pagina2.read)
+  post2=paginaParsed2.css('div.items.normal')
+  post2.css('.item.movies').each do |peli2|
+     links_peli2=peli2.css('div.data').css('h3').css('a').attr("href")
+     
+    pagina_peli2=URI.open(links_peli2)
+    paginaParsed2=Nokogiri::HTML(pagina_peli2.read)
+    paginaParsed2.css('.content.right') .each do |pub2|
+      nombre2=pub2.css('div.data').css('h1').inner_text.gsub ",", " "
+dato2=pub2.css('div.custom_fields').css('span.valor').css('b').inner_text.split(' ')
+  imd2=dato2[0]
+  puts "#{nombre2}, con #{imd2}"
+  Rating_peli.new(nombre2,imd2).guardar
+  
+      
+    end
+  end
+  pagina+=1
+  
+end
+
+datos_rating={}
+array_rating=[]
+cuerpo2 = File.read("peliculas_rating.csv")
+lineas2 = cuerpo2.split("\n")
+lineas2.each do |linea2|
+  cad2=linea2.split(",")
+  rating_peli=cad2[1]
+  rating= rating_peli.to_f
+ 
+  if rating!=0.0 and array_rating.index(rating)==nil
+     array_rating.push(rating)
+     nombre_peli2=cad2[0]
+    datos_rating[nombre_peli2]=rating
+  end
+  
+  
+end
+ 
+
+rating_mayor=array_rating.sort! {|x, y| y <=> x}.slice(0,10)
+
+rating_mayor.each do |rating_max_peli|
+  pelicula_max=datos_rating.index(rating_max_peli)
+  puts "#{pelicula_max}, con #{rating_max_peli}"
+  Rating_mayor_peli.new(pelicula_max,rating_max_peli).guardar
+     
+   
+   
+  end
 

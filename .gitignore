@@ -1,4 +1,4 @@
 #No subir los .csv
 *.csv
-.Rhistory
-.RData
+*.Rhistory
+*.RData

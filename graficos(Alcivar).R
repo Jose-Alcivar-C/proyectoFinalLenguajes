@@ -1,3 +1,4 @@
+
 pregunta1 <- function(){
   
   archivoPaises = read.csv("PeliculasCentroamerica(Alcivar).csv")
@@ -45,8 +46,31 @@ pregunta2 <- function(){
   
 }
 
+#----------
+
+pregunta3 <- function(){
+  
+  archivoPeliculas = read.csv("GenerosPorAnioEcuador(Alcivar).csv")
+  
+  genero = archivoPeliculas$Genero
+  anio=archivoPeliculas$Anio
+  cantidad = archivoPeliculas$CantidadPelis
+  
+  str(archivoPeliculas)
+  
+  library(ggplot2)
+  
+  ggplot( archivoPeliculas, aes(x=anio, y=cantidad, group = genero, colour = genero)) +  
+    geom_line(size=1) + geom_point( size=3, shape=21, fill="white") + theme_minimal()+ 
+    labs(title="Peliculas de animación, comedia y familia, en Ecuador (2015 - 2022)", x="Año", y="Cantidad de peliculas") + 
+    theme(plot.title = element_text(hjust = 0.5))
+
+}
+
 #----------Llamar a las funciones que grafican cada pregunta----------
 
 pregunta1()
 
 pregunta2()
+
+pregunta3()

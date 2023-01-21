@@ -136,6 +136,7 @@ while(pag<8)
     link = "https://play.pelishouse.me/movies/page/#{pag}/"
   end
   pagina=URI.open(link)
+  puts "Scrapeando --#{link}"
   paginaParsed=Nokogiri::HTML(pagina.read)
   post=paginaParsed.css('#archive-content')
   post.css('.item.movies').each do |peli|
@@ -154,7 +155,7 @@ año=fecha[1].strip()
 
 dato=pub.css('div.custom_fields').css('span.valor').css('b').inner_text.split(' ')
 imd=dato[0]
-      puts nombre,pais,duracion,año,imd
+    #  puts nombre,pais,duracion,año,imd
 Pelicula.new(nombre,pais,duracion,año,imd).guardar
   
 
@@ -192,7 +193,7 @@ for p in array_paises
 end
 #puts datos_paises
 datos_paises.each do |llave, valor|
-  puts "#{llave}, con #{valor} peliculas"
+ #puts "#{llave}, con #{valor} peliculas"
    Pais_peli.new(llave,valor).guardar
 end
 
@@ -220,7 +221,7 @@ end
 duracion_minima=array_duracion.sort! {|x, y| x <=> y}.slice(0,10)
 duracion_minima.each do |duracion_min_peli|
     pelicula_ord=datos_duracion[duracion_min_peli]
-    puts "#{pelicula_ord}, con #{duracion_min_peli} min"
+    #puts "#{pelicula_ord}, con #{duracion_min_peli} min"
     Duracion_peli.new(pelicula_ord,duracion_min_peli).guardar
 end
 
@@ -262,6 +263,7 @@ end
 
 datos_rating={}
 array_rating=[]
+pelis=[]
 cuerpo2 = File.read("peliculas_rating.csv")
 lineas2 = cuerpo2.split("\n")
 lineas2.each do |linea2|
@@ -269,24 +271,23 @@ lineas2.each do |linea2|
   rating_peli=cad2[1]
   rating= rating_peli.to_f
  
-  if rating!=0.0 and array_rating.index(rating)==nil
+  if rating!=0.0 and array_rating.include?(rating)!=true
      array_rating.push(rating)
      nombre_peli2=cad2[0]
-    datos_rating[nombre_peli2]=rating
+     datos_rating[rating]=nombre_peli2
   end
   
   
 end
  
-
 rating_mayor=array_rating.sort! {|x, y| y <=> x}.slice(0,10)
-
+puts datos_rating 
 rating_mayor.each do |rating_max_peli|
-  pelicula_max=datos_rating.index(rating_max_peli)
-  puts "#{pelicula_max}, con #{rating_max_peli}"
+  pelicula_max=datos_rating[rating_max_peli]
+  puts "#{rating_max_peli}"
   Rating_mayor_peli.new(pelicula_max,rating_max_peli).guardar
-     
-   
-   
+      
   end
+
+
 

@@ -42,6 +42,7 @@ class PeliculaPorGenero
   
   array_ratingAccion=[]
   array_ratingTerror=[]
+  array_ratingRomance=[]
   array_duracionCienciaFiccion=[]
   
   cuerpo = File.read("prueba.csv")

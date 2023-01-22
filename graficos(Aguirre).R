@@ -19,11 +19,10 @@ grafico1 <- grafico1 + theme(legend.position = "none") + labs(
 grafico1
 
 
-
-
-
-
+# Relación de la duración con el IMB
 library(ggplot2)
+
+
 duraciones_datos = read.csv("peliculas_duracion_minima(Aguirre).csv")
 duracion<- duraciones_datos$Duracion
 nombre <- duraciones_datos$Pelicula
@@ -44,3 +43,25 @@ nombre <- duraciones_datos$Pelicula
     #title = "Duración Mínima de películas",
     
 #  )
+
+# Las 10 mejores películas rankeadas en el 2020
+library(ggplot2)
+rating_datos = read.csv("peliculas_rating_mayor(Aguirre).csv")
+nombre_pelicula<-rating_datos$Pelicula
+imd<-rating_datos$Rating
+mes<-rating_datos$Mes
+mes <- factor(rating_datos$Mes, levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                                      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+
+ggplot(rating_datos, aes(x=mes, y = imd, fill = nombre_pelicula)) + 
+  geom_bar(stat = "identity",position="dodge") +
+  geom_text(aes(label = imd), color = "black")+
+  labs(
+     x = "Mes",
+    y = "Rating",
+    title = "Las 10 Mejores películas del 2020",
+    
+      )
+
+
+

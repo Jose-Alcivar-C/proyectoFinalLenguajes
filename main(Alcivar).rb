@@ -144,7 +144,7 @@ class GenerosPorAnioEcuador
 
 		puts("\n\n\n------------------------------Extrayendo peliculas de comedia, animacion y familia por anio en Ecuador------------------------------\n")
 
-		CSV.open("GenerosPorAnioEcuador(Jose Alcivar).csv", "a") do |csv|
+		CSV.open("GenerosPorAnioEcuador(Alcivar).csv", "wb") do |csv|
 
 			csv << %w[Genero Anio CantidadPelis]
 			

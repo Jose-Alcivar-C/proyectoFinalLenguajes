@@ -1,28 +1,25 @@
 class Pelicula
-  attr_accessor :nombre,:pais, :duracion, :año,:votos
-  def initialize(nombre,pais,duracion,año,votos)
+  attr_accessor :nombre,:pais, :duracion, :año
+  def initialize(nombre,pais,duracion,año)
     @nombre=nombre
     @pais=pais
     @duracion=duracion
     @año=año
-    @votos=votos
+    
     
      
   end
   def guardar()
     
-    CSV.open("peliculas_info.csv", "a") do |csv|
+    CSV.open("peliculas_info(Aguirre).csv", "a") do |csv|
        if(@pais=="")
          @pais="No especifica"
        end
       if(@duracion=="")
          @duracion="No especifica"
        end
-       if(@votos=="")
-         @votos="No aplica"
-       end
        
-       csv<< [@nombre,@pais,@duracion,@año,@votos]
+       csv<< [@nombre,@pais,@duracion,@año]
     end
    
   end
@@ -38,7 +35,7 @@ class Pais_peli
   end
   def guardar()
     
-    CSV.open("peliculas_pais.csv", "a") do |csv|
+    CSV.open("peliculas_pais(Aguirre).csv", "a") do |csv|
        csv<< [@nombre,@cantidad]   
     end
    
@@ -55,7 +52,7 @@ class Duracion_peli
   end
   def guardar()
     
-    CSV.open("peliculas_duracion_minima.csv", "a") do |csv|
+    CSV.open("peliculas_duracion_minima(Aguirre).csv", "a") do |csv|
        csv<< [@peli,@duracion]   
     end
    
@@ -72,7 +69,7 @@ class Rating_peli
   end
   def guardar()
     
-    CSV.open("peliculas_rating.csv", "a") do |csv|
+    CSV.open("peliculas_rating(Aguirre).csv", "a") do |csv|
        csv<< [@peli,@imd]   
     end
    
@@ -89,7 +86,7 @@ class Rating_mayor_peli
   end
   def guardar()
     
-    CSV.open("peliculas_rating_mayor.csv", "a") do |csv|
+    CSV.open("peliculas_rating_mayor(Aguirre).csv", "a") do |csv|
        csv<< [@peli,@rating]   
     end
    
@@ -102,25 +99,25 @@ require 'csv' #escribir y leer csv
 
 #Poner encabezados
 
-   CSV.open("peliculas_info.csv", "wb") do |csv|
-     csv << %w[nombre,pais,duracion,año,votos]
+   CSV.open("peliculas_info(Aguirre).csv", "wb") do |csv|
+     csv << %w[Nombre Pais Duracion Año]
 
    end
-   CSV.open("peliculas_pais.csv", "wb") do |csv|
-     csv << %w[pais,cantidad]
+   CSV.open("peliculas_pais(Aguirre).csv", "wb") do |csv|
+     csv << %w[Pais Cantidad]
 
    end
-   CSV.open("peliculas_duracion_minima.csv", "wb") do |csv|
-     csv << %w[pelicula,duracion]
+   CSV.open("peliculas_duracion_minima(Aguirre).csv", "wb") do |csv|
+     csv << %w[Pelicula Duracion]
 
    end
-   CSV.open("peliculas_rating.csv", "wb") do |csv|
-     csv << %w[pelicula,IMDb]
+   CSV.open("peliculas_rating(Aguirre).csv", "wb") do |csv|
+     csv << %w[Pelicula IMDb]
 
   end
 
-   CSV.open("peliculas_rating_mayor.csv", "wb") do |csv|
-     csv << %w[pelicula,rating]
+   CSV.open("peliculas_rating_mayor(Aguirre).csv", "wb") do |csv|
+     csv << %w[Pelicula Rating]
 
   end
   
@@ -128,7 +125,7 @@ require 'csv' #escribir y leer csv
 pag=1
 link=''
 # scrapeando peliculas de forma general
-
+puts "-----------------------------Primer scraping----------------------------------------------------"
 while(pag<8)
   if pag==1
     link = 'https://play.pelishouse.me/movies/'
@@ -153,10 +150,8 @@ duracion=pub.css('div.sheader').css('div.extra').css('span.runtime').inner_text
 fecha=pub.css('div.extra').css('span.date').inner_text.split(",")
 año=fecha[1].strip()
 
-dato=pub.css('div.custom_fields').css('span.valor').css('b').inner_text.split(' ')
-imd=dato[0]
-    #  puts nombre,pais,duracion,año,imd
-Pelicula.new(nombre,pais,duracion,año,imd).guardar
+
+Pelicula.new(nombre,pais,duracion,año).guardar
   
 
  
@@ -173,12 +168,12 @@ end
 # ¿Cuál es la cantidad de películas por país que tiene la página?
  
 array_paises=[]
-cuerpo = File.read("peliculas_info.csv")
+cuerpo = File.read("peliculas_info(Aguirre).csv")
 lineas = cuerpo.split("\n")
 lineas.each do |linea|
     cad=linea.split(",")
     pais=cad[1]
-    if pais!="No especifica" and pais!="Unknown"and pais!="pais" 
+    if pais!="No especifica" and pais!="Unknown"and pais!="Pais" 
       array_paises.push(pais)
     end 
 end
@@ -195,14 +190,14 @@ end
 datos_paises.each do |llave, valor|
  #puts "#{llave}, con #{valor} peliculas"
    Pais_peli.new(llave,valor).guardar
+  
 end
 
 #¿Cuáles son las 10 películas que tienen una duración en minutos mínima en la página?
  
-
 datos_duracion={}
 array_duracion=[]
-cuerpo = File.read("peliculas_info.csv")
+cuerpo = File.read("peliculas_info(Aguirre).csv")
 lineas = cuerpo.split("\n")
 lineas.each do |linea|
     cad=linea.split(",")
@@ -230,7 +225,7 @@ end
 
 pagina=1
 link2=''
-
+puts "-----------------------------Segundo scraping----------------------------------------------------"
 while(pagina<8)
   if pagina==1
     link2 = "https://play.pelishouse.me/release/2020/"
@@ -238,8 +233,9 @@ while(pagina<8)
     link2 = "https://play.pelishouse.me/release/2020/page/#{pagina}/"
    
   end
- # puts "Scrapeando --#{link2} "
+ 
   pagina2=URI.open(link2)
+  puts "Scrapeando --#{link2} "
   paginaParsed2=Nokogiri::HTML(pagina2.read)
   post2=paginaParsed2.css('div.items.normal')
   post2.css('.item.movies').each do |peli2|
@@ -251,7 +247,7 @@ while(pagina<8)
       nombre2=pub2.css('div.data').css('h1').inner_text.gsub ",", " "
 dato2=pub2.css('div.custom_fields').css('span.valor').css('b').inner_text.split(' ')
   imd2=dato2[0]
-  puts "#{nombre2}, con #{imd2}"
+  #puts "#{nombre2}, con #{imd2}"
   Rating_peli.new(nombre2,imd2).guardar
   
       
@@ -264,14 +260,14 @@ end
 datos_rating={}
 array_rating=[]
 pelis=[]
-cuerpo2 = File.read("peliculas_rating.csv")
+cuerpo2 = File.read("peliculas_rating(Aguirre).csv")
 lineas2 = cuerpo2.split("\n")
 lineas2.each do |linea2|
   cad2=linea2.split(",")
   rating_peli=cad2[1]
   rating= rating_peli.to_f
  
-  if rating!=0.0 and array_rating.include?(rating)!=true
+  if  array_rating.include?(rating)!=true
      array_rating.push(rating)
      nombre_peli2=cad2[0]
      datos_rating[rating]=nombre_peli2
@@ -281,10 +277,10 @@ lineas2.each do |linea2|
 end
  
 rating_mayor=array_rating.sort! {|x, y| y <=> x}.slice(0,10)
-puts datos_rating 
+#puts datos_rating 
 rating_mayor.each do |rating_max_peli|
   pelicula_max=datos_rating[rating_max_peli]
-  puts "#{rating_max_peli}"
+  #puts "#{rating_max_peli}"
   Rating_mayor_peli.new(pelicula_max,rating_max_peli).guardar
       
   end

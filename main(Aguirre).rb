@@ -60,34 +60,36 @@ class Duracion_peli
 end
 
 class Rating_peli
-  attr_accessor :peli,:imd
-  def initialize(peli,imd)
+  attr_accessor :peli,:imd,:mes
+  def initialize(peli,imd,mes)
     @peli=peli
     @imd=imd
+    @mes=mes
     
      
   end
   def guardar()
     
     CSV.open("peliculas_rating(Aguirre).csv", "a") do |csv|
-       csv<< [@peli,@imd]   
+       csv<< [@peli,@imd,@mes]   
     end
    
   end
 end
 
 class Rating_mayor_peli
-  attr_accessor :peli,:rating
-  def initialize(peli,rating)
+  attr_accessor :peli,:rating,:mes
+  def initialize(peli,rating,mes)
     @peli=peli
     @rating=rating
+    @mes=mes
     
      
   end
   def guardar()
     
     CSV.open("peliculas_rating_mayor(Aguirre).csv", "a") do |csv|
-       csv<< [@peli,@rating]   
+       csv<< [@peli,@rating,@mes]   
     end
    
   end
@@ -112,16 +114,16 @@ require 'csv' #escribir y leer csv
 
    end
    CSV.open("peliculas_rating(Aguirre).csv", "wb") do |csv|
-     csv << %w[Pelicula IMDb]
+     csv << %w[Pelicula IMDb Mes]
 
   end
 
    CSV.open("peliculas_rating_mayor(Aguirre).csv", "wb") do |csv|
-     csv << %w[Pelicula Rating]
+     csv << %w[Pelicula Rating Mes]
 
   end
   
-  
+
 pag=1
 link=''
 # scrapeando peliculas de forma general
@@ -239,25 +241,24 @@ while(pagina<8)
   paginaParsed2=Nokogiri::HTML(pagina2.read)
   post2=paginaParsed2.css('div.items.normal')
   post2.css('.item.movies').each do |peli2|
-     links_peli2=peli2.css('div.data').css('h3').css('a').attr("href")
      
-    pagina_peli2=URI.open(links_peli2)
-    paginaParsed2=Nokogiri::HTML(pagina_peli2.read)
-    paginaParsed2.css('.content.right') .each do |pub2|
-      nombre2=pub2.css('div.data').css('h1').inner_text.gsub ",", " "
-dato2=pub2.css('div.custom_fields').css('span.valor').css('b').inner_text.split(' ')
-  imd2=dato2[0]
-  #puts "#{nombre2}, con #{imd2}"
-  Rating_peli.new(nombre2,imd2).guardar
+     titulo=peli2.css('div.data').css('h3').css('a').inner_text
+     dato=peli2.css('div.data').css('span').inner_text.split(".")
+     mes=dato[0].strip()
+     imd=peli2.css('div.rating').inner_text
+    
+    
+    Rating_peli.new(titulo,imd,mes).guardar
   
       
-    end
+    
   end
   pagina+=1
   
 end
 
 datos_rating={}
+datos_mes={}
 array_rating=[]
 pelis=[]
 cuerpo2 = File.read("peliculas_rating(Aguirre).csv")
@@ -270,20 +271,21 @@ lineas2.each do |linea2|
   if  array_rating.include?(rating)!=true
      array_rating.push(rating)
      nombre_peli2=cad2[0]
+     mes=cad2[2]
      datos_rating[rating]=nombre_peli2
+     datos_mes[nombre_peli2]=mes
   end
   
   
 end
- 
+
 rating_mayor=array_rating.sort! {|x, y| y <=> x}.slice(0,10)
 #puts datos_rating 
 rating_mayor.each do |rating_max_peli|
   pelicula_max=datos_rating[rating_max_peli]
+  mes=datos_mes[pelicula_max]
   #puts "#{rating_max_peli}"
-  Rating_mayor_peli.new(pelicula_max,rating_max_peli).guardar
+  Rating_mayor_peli.new(pelicula_max,rating_max_peli,mes).guardar
       
-  end
-
-
+end
 

@@ -19,33 +19,34 @@ grafico1 <- grafico1 + theme(legend.position = "none") + labs(
 grafico1
 
 
-# Relación de la duración con el IMB
-library(ggplot2)
 
+# Las 10 películas con duración mínima
+library(ggplot2)
+setwd("C:/Users/Dennisse/Desktop/proyectoFinalLenguajes")
 
 duraciones_datos = read.csv("peliculas_duracion_minima(Aguirre).csv")
 duracion<- duraciones_datos$Duracion
 nombre <- duraciones_datos$Pelicula
 
-
-#ggplot(duraciones_datos, aes(x = reorder(nombre, duracion), y = duracion)) +
- # geom_segment(aes(x = reorder(nombre, duracion),
-  #                 xend = reorder(nombre, duracion),
-   #                y = 0, yend = duracion),
-    #           color = "red", lwd = 1) +
-  #geom_point(size = 7 , pch = 21, bg = 4, col = 1) +
-  #geom_text(aes(label = duracion), color = "white", size = 3) +
-  #scale_x_discrete(labels = paste0("G_", 1:10))+
-  #coord_flip() +
-  #labs(
-   # x = "Películas",
-    #y = "Duración",
-    #title = "Duración Mínima de películas",
+ggplot(duraciones_datos, aes(x = reorder(nombre, duracion), y = duracion)) +
+  geom_segment(aes(x = reorder(nombre, duracion),
+                   xend = reorder(nombre, duracion),
+                  y = 0, yend = duracion),
+             color = "red", lwd = 1) +
+  geom_point(size = 7 , pch = 21, bg = 4, col = 1) +
+  geom_text(aes(label = duracion), color = "white", size = 3) +
+  scale_x_discrete(labels = nombre)+
+  coord_flip() +
+  labs(
+    x = "Películas",
+    y = "Duración",
+    title = "Duración Mínima de películas")
     
-#  )
+
 
 # Las 10 mejores películas rankeadas en el 2020
 library(ggplot2)
+setwd("C:/Users/Dennisse/Desktop/proyectoFinalLenguajes")
 rating_datos = read.csv("peliculas_rating_mayor(Aguirre).csv")
 nombre_pelicula<-rating_datos$Pelicula
 imd<-rating_datos$Rating

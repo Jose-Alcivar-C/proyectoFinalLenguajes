@@ -1,10 +1,9 @@
 class Pelicula
-  attr_accessor :nombre,:pais, :duracion, :año
-  def initialize(nombre,pais,duracion,año)
+  attr_accessor :nombre,:pais, :duracion
+  def initialize(nombre,pais,duracion)
     @nombre=nombre
     @pais=pais
     @duracion=duracion
-    @año=año
     
     
      
@@ -19,7 +18,7 @@ class Pelicula
          @duracion="No especifica"
        end
        
-       csv<< [@nombre,@pais,@duracion,@año]
+       csv<< [@nombre,@pais,@duracion]
     end
    
   end
@@ -102,7 +101,7 @@ require 'csv' #escribir y leer csv
 #Poner encabezados
 
    CSV.open("peliculas_info(Aguirre).csv", "wb") do |csv|
-     csv << %w[Nombre Pais Duracion Año]
+     csv << %w[Nombre Pais Duracion]
 
    end
    CSV.open("peliculas_pais(Aguirre).csv", "wb") do |csv|
@@ -128,7 +127,7 @@ pag=1
 link=''
 # scrapeando peliculas de forma general
 puts "-----------------------------Primer scraping----------------------------------------------------"
-while(pag<8)
+while(pag<6)
   if pag==1
     link = 'https://play.pelishouse.me/movies/'
   else
@@ -139,25 +138,17 @@ while(pag<8)
   paginaParsed=Nokogiri::HTML(pagina.read)
   post=paginaParsed.css('#archive-content')
   post.css('.item.movies').each do |peli|
-    titulos=peli.css('div.data').css('h3').inner_text
+    titulo=peli.css('div.data').css('h3').inner_text.gsub ",", " "
+    duracion=peli.css('div.metadata').css('span:nth-child(3)').inner_text
     links_peli=peli.css('div.data').css('h3').css('a').attr("href")
     pagina_peli=URI.open(links_peli)
     paginaParsed2=Nokogiri::HTML(pagina_peli.read)
+    pais=""
     paginaParsed2.css('.content.right') .each do |pub|
-      
-nombre=pub.css('div.data').css('h1').inner_text.gsub ",", " "
-
-pais=pub.css('div.sheader').css('div.extra').css('span.country').inner_text
-duracion=pub.css('div.sheader').css('div.extra').css('span.runtime').inner_text
-fecha=pub.css('div.extra').css('span.date').inner_text.split(",")
-año=fecha[1].strip()
-
-
-Pelicula.new(nombre,pais,duracion,año).guardar
-  
-
- 
+      pais=pub.css('div.sheader').css('div.extra').css('span.country').inner_text
     end
+    Pelicula.new(titulo,pais,duracion).guardar
+  
     
 
       
@@ -165,7 +156,6 @@ Pelicula.new(nombre,pais,duracion,año).guardar
  end
    pag+=1 
 end
-
 
 # ¿Cuál es la cantidad de películas por país que tiene la página?
  
@@ -204,7 +194,7 @@ lineas = cuerpo.split("\n")
 lineas.each do |linea|
     cad=linea.split(",")
   duracion_peli=cad[2]
-  if(duracion_peli!="No especifica" and duracion_peli!="duracion" )
+  if(duracion_peli!="No especifica" and  cad[0]!="Nombre" )
     separando=duracion_peli.split(" ")
     duracion_1=separando[0]
      duracion_min= duracion_1.to_i

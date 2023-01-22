@@ -1,2 +1,4 @@
-#No subir los .csv
+#No subir los .csv, .RData, 
 *.csv
+*.Rhistory
+*.RData

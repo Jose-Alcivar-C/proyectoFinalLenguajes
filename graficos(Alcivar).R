@@ -19,7 +19,7 @@ pregunta1 <- function(){
   
   axis(2, tck = 1, lty = 2, col = "gray")
   
-  legend(x = "topleft", legend = c("El Salvador", "Guatemala", "Honduras", "Panama"), 
+  legend(x = "topleft", inset = 0.05, legend = c("El Salvador", "Guatemala", "Honduras", "Panama"), 
         fill = colores, title = "Paises")
   
 }
@@ -39,8 +39,8 @@ pregunta2 <- function(){
   print(peliculas)
   
   diagrama = barplot(height = peliculas, names = genero, ylim = c(0, 50000),
-          col = c("#009ACD", "#00FF00", "#CDC673", "#AB82FF"), main = "Los cinco generos con mas peliculas en Ecuador",
-          xlab = "Generos", ylab = "Cantidad de peliculas")
+          col = c("#009ACD", "#00FF00", "#CDC673", "#AB82FF"), main = "Los cinco géneros con mas películas en Ecuador",
+          xlab = "Géneros", ylab = "Cantidad de películas")
   
   text(diagrama, peliculas+1500, labels = peliculas)
   
@@ -62,7 +62,7 @@ pregunta3 <- function(){
   
   ggplot( archivoPeliculas, aes(x=anio, y=cantidad, group = genero, colour = genero)) +  
     geom_line(size=1) + geom_point( size=3, shape=21, fill="white") + theme_minimal()+ 
-    labs(title="Peliculas de animación, comedia y familia, en Ecuador (2015 - 2022)", x="Año", y="Cantidad de peliculas") + 
+    labs(title="Peliculas de animación, comedia y familia, en Ecuador (2015 - 2022)", x="Año", y="Cantidad de películas") + 
     theme(plot.title = element_text(hjust = 0.5))
 
 }

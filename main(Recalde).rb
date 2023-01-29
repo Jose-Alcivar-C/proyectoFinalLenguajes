@@ -151,7 +151,7 @@ top5RatingRomance.each do |vo|
 end
 end
 puts "----------Distribucción de la duración de las peliculas de ciencia ficción ----------"
-#En pantalla se mostrará 10 distribuciones, en la grafica en R estarán todos los datos que contiene el array
+#En la grafica se visualizara la distribucción para todas las categorias
 puts array_duracionCienciaFiccion.slice(0,10)
 
 class PeliculaPorAnio
@@ -246,38 +246,3 @@ class PeliculaPorAnio
       csv << [2022,promedioRating2022.to_f]
     end
 
-
-class CienciaFiccionDuracion
-  def guardar()
-    CSV.open('G_CienciaFiccion(Recalde).csv', 'a') do |csv| 
-      csv << %w[Genero Nombre_Pelicula Duracion]
-      pelis=0; pag=1
-      while (pelis<5)
-        link="https://www1.pelisgratishd.io/genero/ciencia-ficcion/page/#{pag}/"
-
-        pagina = URI.open(link)
-        paginaParsed = Nokogiri::HTML(pagina.read)
-        itemsP= paginaParsed.css('.items')
-        prueb=itemsP.css('article')
- 
-        prueb.each do |item|
-            titulo= item.css('.data').inner_text
-            rating=item.css('div').css('.rating').inner_text
-            duracion= item.css('.imdb + span + span').inner_text
-            genero="Ciencia Ficción"
-            csv << [genero.to_s,titulo.to_s,duracion.to_f]
-            
-        end
-        pelis+=1
-        pag+=1
-
-      end
-
-
-    end
-
-  end
-
-end
-distribucion_CienciaFiccion = CienciaFiccionDuracion.new()
-distribucion_CienciaFiccion.guardar()

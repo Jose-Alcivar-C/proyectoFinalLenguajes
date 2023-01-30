@@ -22,7 +22,7 @@ grafico1
 
 # Las 10 películas con duración mínima
 library(ggplot2)
-setwd("C:/Users/Dennisse/Desktop/proyectoFinalLenguajes")
+#setwd("C:/Users/Dennisse/Desktop/proyectoFinalLenguajes")
 
 duraciones_datos = read.csv("peliculas_duracion_minima(Aguirre).csv")
 duracion<- duraciones_datos$Duracion
@@ -35,7 +35,6 @@ ggplot(duraciones_datos, aes(x = reorder(nombre, duracion), y = duracion)) +
              color = "red", lwd = 1) +
   geom_point(size = 7 , pch = 21, bg = 4, col = 1) +
   geom_text(aes(label = duracion), color = "white", size = 3) +
-  scale_x_discrete(labels = nombre)+
   coord_flip() +
   labs(
     x = "Películas",
@@ -46,7 +45,7 @@ ggplot(duraciones_datos, aes(x = reorder(nombre, duracion), y = duracion)) +
 
 # Las 10 mejores películas rankeadas en el 2020
 library(ggplot2)
-setwd("C:/Users/Dennisse/Desktop/proyectoFinalLenguajes")
+#setwd("C:/Users/Dennisse/Desktop/proyectoFinalLenguajes")
 rating_datos = read.csv("peliculas_rating_mayor(Aguirre).csv")
 nombre_pelicula<-rating_datos$Pelicula
 imd<-rating_datos$Rating

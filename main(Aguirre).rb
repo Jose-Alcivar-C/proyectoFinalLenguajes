@@ -127,7 +127,7 @@ pag=1
 link=''
 # scrapeando peliculas de forma general
 puts "-----------------------------Primer scraping----------------------------------------------------"
-while(pag<6)
+while(pag<5)
   if pag==1
     link = 'https://play.pelishouse.me/movies/'
   else

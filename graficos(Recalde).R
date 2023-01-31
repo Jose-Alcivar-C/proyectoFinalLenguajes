@@ -19,7 +19,7 @@ ggplot(data_rating, aes(x=Pelicula, y=Rating, fill=Genero))+
   theme(legend.position ="right" )+
   geom_text(aes(label=Rating), nudge_y = 2)+
   
-  ggtitle("Top 5 de pel?culas por g?nero")+
+  ggtitle("Top 5 de películas por género")+
   ggeasy::easy_center_title()+
   coord_flip()
 
@@ -30,7 +30,7 @@ data_RatingPromedio <- read.csv("G_PromedioRating(Recalde).csv")
 
 plot(x = data_RatingPromedio$Anio, y = data_RatingPromedio$Promedio_Rating,
      main = "Dispersión del rating promedio por año", 
-     xlab = "A?o de estreno",
+     xlab = "Año de estreno",
      ylab = "Promedio de rating",
      col = c("violetred", "Red", "Green", "Lightblue", "Blue"),
      pch=19, cex=1.5)

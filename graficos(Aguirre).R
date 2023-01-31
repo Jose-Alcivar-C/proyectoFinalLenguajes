@@ -2,7 +2,7 @@ install.packages("ggplot2")
 install.packages("treemapify")
 library(ggplot2)
 library(treemapify)
-setwd("C:/Users/Dennisse/Desktop/proyectoFinalLenguajes")
+#setwd("C:/Users/Dennisse/Desktop/proyectoFinalLenguajes")
 
 # Cantidad de películas por país 
 pais_datos = read.csv("peliculas_pais(Aguirre).csv")

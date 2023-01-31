@@ -1,3 +1,8 @@
+install.packages("ggplot2")
+install.packages("scales")
+install.packages("hrbrthemes")
+install.packages("ggeasy")
+
 library(ggplot2)
 library(scales)
 library(hrbrthemes)
@@ -14,31 +19,31 @@ ggplot(data_rating, aes(x=Pelicula, y=Rating, fill=Genero))+
   theme(legend.position ="right" )+
   geom_text(aes(label=Rating), nudge_y = 2)+
   
-  ggtitle("Top 5 de películas por género")+
+  ggtitle("Top 5 de pel?culas por g?nero")+
   ggeasy::easy_center_title()+
   coord_flip()
 
 #GRAFICO 2
-#Dispersion del rating promedio por año 2018-2022
+#Dispersion del rating promedio por a?o 2018-2022
 
 data_RatingPromedio <- read.csv("G_PromedioRating(Recalde).csv")
 
 plot(x = data_RatingPromedio$Anio, y = data_RatingPromedio$Promedio_Rating,
-     main = "Dispersión del rating promedio por año", 
-     xlab = "Año de estreno",
+     main = "Dispersi?n del rating promedio por a?o", 
+     xlab = "A?o de estreno",
      ylab = "Promedio de rating",
      col = c("violetred", "Red", "Green", "Lightblue", "Blue"),
      pch=19, cex=1.5)
  
 
 #GRAFICO 3 
-#Distribucion de la duración de las peliculas
+#Distribucion de la duraci?n de las peliculas
 dataPeliculasGenero <- read.csv("peliculasPorGenero(Recalde).csv")
 boxplot(dataPeliculasGenero$Duracion ~ dataPeliculasGenero$Genero,
-        main = "Distribucción de la duración de las peliculas por categoría",
-        xlab = "Categoría",
-        ylab = "Duración",
+        main = "Distribucci?n de la duraci?n de las peliculas por categor?a",
+        xlab = "Categor?a",
+        ylab = "Duraci?n",
         las = 1,
         col = c("violetred", "steelblue1", "salmon1", "palegoldenrod"),
-        names= c("Ciencia Ficción", "Misterio", "Romance", "Terror")
+        names= c("Ciencia Ficci?n", "Misterio", "Romance", "Terror")
 )

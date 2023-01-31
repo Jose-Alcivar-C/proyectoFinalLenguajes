@@ -1,4 +1,6 @@
 
+install.packages("ggplot2")
+
 pregunta1 <- function(){
   
   archivoPaises = read.csv("PeliculasCentroamerica(Alcivar).csv")
@@ -13,7 +15,7 @@ pregunta1 <- function(){
 
   
   plot(x = anio, y = peliculas, col= colores[paises], pch = 19, xlab = "Año", ylab = "Películas",
-       main = "Distribución de las películas en países de Centroamérica",
+       main = "Distribución de las películas de drama en países de Centroamérica",
        sub = "Relación entre el año y la cantidad de películas en cada país.")
    
   legend(x = "topleft", inset = c(0, 0),  cex = 0.7, legend = c("El Salvador", "Guatemala", "Honduras", "Panama"), 
@@ -46,7 +48,6 @@ pregunta2 <- function(){
 #----------
 
 pregunta3 <- function(){
-  
   archivoPeliculas = read.csv("GenerosPorAnioEcuador(Alcivar).csv")
   
   genero = archivoPeliculas$Genero

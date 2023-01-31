@@ -39,7 +39,8 @@ class PeliculasPorAnioCentroamerica
 					paginaLeida = paginaLeer.read
 					paginaNoko = Nokogiri::HTML(paginaLeida)
 
-					resultado = paginaNoko.css(".total-titles").inner_text.strip
+					resultado = paginaNoko.css(".title-list-options").css(".title-list-options__box").css(".title-list-options__box-left")
+											.css(".total-titles").inner_text.strip
 					resultadoSeparado = resultado.split(" ", -1)
 
 					preCantidadPeliculas = resultadoSeparado[0]
@@ -100,7 +101,8 @@ class GenerosPeliculasEcuador
 				paginaLeida = paginaLeer.read
 				paginaNoko = Nokogiri::HTML(paginaLeida)
 				
-				resultado = paginaNoko.css(".total-titles").inner_text.strip
+				resultado = paginaNoko.css(".title-list-options").css(".title-list-options__box").css(".title-list-options__box-left")
+										.css(".total-titles").inner_text.strip
 				resultadoSeparado = resultado.split(" ", -1)
 
 				preCantidadPeliculas = resultadoSeparado[0]
@@ -161,7 +163,8 @@ class GenerosPorAnioEcuador
 					paginaLeida = paginaLeer.read
 					paginaNoko = Nokogiri::HTML(paginaLeida)
 
-					resultado = paginaNoko.css(".total-titles").inner_text.strip
+					resultado = paginaNoko.css(".title-list-options").css(".title-list-options__box").css(".title-list-options__box-left")
+											.css(".total-titles").inner_text.strip
 					resultadoSeparado = resultado.split(" ", -1)
 
 					preCantidadPeliculas = resultadoSeparado[0]

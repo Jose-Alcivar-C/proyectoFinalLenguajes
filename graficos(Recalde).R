@@ -29,7 +29,7 @@ ggplot(data_rating, aes(x=Pelicula, y=Rating, fill=Genero))+
 data_RatingPromedio <- read.csv("G_PromedioRating(Recalde).csv")
 
 plot(x = data_RatingPromedio$Anio, y = data_RatingPromedio$Promedio_Rating,
-     main = "Dispersi?n del rating promedio por a?o", 
+     main = "Dispersión del rating promedio por año", 
      xlab = "A?o de estreno",
      ylab = "Promedio de rating",
      col = c("violetred", "Red", "Green", "Lightblue", "Blue"),
@@ -40,10 +40,10 @@ plot(x = data_RatingPromedio$Anio, y = data_RatingPromedio$Promedio_Rating,
 #Distribucion de la duraci?n de las peliculas
 dataPeliculasGenero <- read.csv("peliculasPorGenero(Recalde).csv")
 boxplot(dataPeliculasGenero$Duracion ~ dataPeliculasGenero$Genero,
-        main = "Distribucci?n de la duraci?n de las peliculas por categor?a",
-        xlab = "Categor?a",
-        ylab = "Duraci?n",
+        main = "Distribucción de la duración de las peliculas por categoría",
+        xlab = "Categoría",
+        ylab = "Duración",
         las = 1,
         col = c("violetred", "steelblue1", "salmon1", "palegoldenrod"),
-        names= c("Ciencia Ficci?n", "Misterio", "Romance", "Terror")
+        names= c("Ciencia Ficción", "Misterio", "Romance", "Terror")
 )
